@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
   const [formData, setFormData] = useState({
@@ -10,6 +10,21 @@ function App() {
   });
 
   const [message, setMessage] = useState("");
+  const [transactions, setTransactions] = useState([]);
+
+  async function fetchTransactions() {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/transactions");
+      const data = await response.json();
+      setTransactions(data);
+    } catch (error) {
+      setMessage("Failed to load transactions");
+    }
+  }
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -48,17 +63,19 @@ function App() {
         description: "",
         date: "",
       });
+
+      fetchTransactions();
     } catch (error) {
       setMessage("Failed to connect to backend");
     }
   }
 
   return (
-    <div style={{ padding: "40px", fontFamily: "Arial", maxWidth: "500px" }}>
+    <div style={{ padding: "40px", fontFamily: "Arial", maxWidth: "700px" }}>
       <h1>Budget Tracker</h1>
-      <h2>Add Transaction</h2>
 
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: "12px" }}>
+      <h2>Add Transaction</h2>
+      <form onSubmit={handleSubmit} style={{ display: "grid", gap: "12px", marginBottom: "30px" }}>
         <select name="type" value={formData.type} onChange={handleChange}>
           <option value="expense">Expense</option>
           <option value="income">Income</option>
@@ -98,7 +115,35 @@ function App() {
         <button type="submit">Add Transaction</button>
       </form>
 
-      {message && <p style={{ marginTop: "20px" }}>{message}</p>}
+      {message && <p>{message}</p>}
+
+      <h2>Transactions</h2>
+
+      {transactions.length === 0 ? (
+        <p>No transactions yet.</p>
+      ) : (
+        <ul style={{ listStyle: "none", padding: 0 }}>
+          {transactions.map((transaction) => (
+            <li
+              key={transaction.id}
+              style={{
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                padding: "12px",
+                marginBottom: "12px",
+              }}
+            >
+              <strong>{transaction.type.toUpperCase()}</strong> — ${transaction.amount}
+              <br />
+              Category: {transaction.category}
+              <br />
+              Description: {transaction.description || "No description"}
+              <br />
+              Date: {transaction.date}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
