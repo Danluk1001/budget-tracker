@@ -1,4 +1,4 @@
-function TransactionList({ transactions }) {
+function TransactionList({ transactions, handleDelete }) {
   return (
     <>
       <h2>Transactions</h2>
@@ -25,6 +25,17 @@ function TransactionList({ transactions }) {
               Description: {transaction.description || "No description"}
               <br />
               Date: {transaction.date}
+              <br />
+              <button
+                onClick={() => handleDelete(transaction.id)}
+                style={{
+                  marginTop: "10px",
+                  padding: "6px 12px",
+                  cursor: "pointer",
+                }}
+              >
+                Delete
+              </button>
             </li>
           ))}
         </ul>

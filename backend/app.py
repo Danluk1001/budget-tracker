@@ -94,6 +94,17 @@ def add_transaction():
 
     return jsonify(new_transaction.to_dict()), 201
 
+@app.route("/transactions/<int:id>", methods=["DELETE"])
+def delete_transaction(id):
+    transaction = Transaction.query.get(id)
+
+    if not transaction:
+        return jsonify({"error": "Transaction not found"}), 404
+
+    db.session.delete(transaction)
+    db.session.commit()
+
+    return jsonify({"message": "Transaction deleted successfully"})
 
 @app.route("/summary", methods=["GET"])
 def get_summary():

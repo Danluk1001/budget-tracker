@@ -90,6 +90,28 @@ function App() {
     }
   }
 
+  async function handleDelete(id) {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/transactions/${id}`, {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setMessage(data.error || "Failed to delete transaction");
+        return;
+      }
+
+      setMessage("Transaction deleted successfully!");
+
+      fetchTransactions();
+      fetchSummary();
+    } catch (error) {
+      setMessage("Failed to connect to backend");
+    }
+  }
+
   return (
     <div
       style={{
@@ -111,7 +133,10 @@ function App() {
 
       {message && <p>{message}</p>}
 
-      <TransactionList transactions={transactions} />
+      <TransactionList
+        transactions={transactions}
+        handleDelete={handleDelete}
+      />
     </div>
   );
 }
