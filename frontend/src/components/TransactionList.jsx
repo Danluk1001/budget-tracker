@@ -1,4 +1,4 @@
-function TransactionList({ transactions, handleDelete }) {
+function TransactionList({ transactions, handleDelete, handleEdit }) {
   return (
     <>
       <h2>Transactions</h2>
@@ -26,16 +26,22 @@ function TransactionList({ transactions, handleDelete }) {
               <br />
               Date: {transaction.date}
               <br />
-              <button
-                onClick={() => handleDelete(transaction.id)}
-                style={{
-                  marginTop: "10px",
-                  padding: "6px 12px",
-                  cursor: "pointer",
-                }}
-              >
-                Delete
-              </button>
+
+              <div style={{ marginTop: "10px", display: "flex", gap: "10px" }}>
+                <button
+                  onClick={() => handleEdit(transaction)}
+                  style={{ padding: "6px 12px", cursor: "pointer" }}
+                >
+                  Edit
+                </button>
+
+                <button
+                  onClick={() => handleDelete(transaction.id)}
+                  style={{ padding: "6px 12px", cursor: "pointer" }}
+                >
+                  Delete
+                </button>
+              </div>
             </li>
           ))}
         </ul>

@@ -106,6 +106,51 @@ def delete_transaction(id):
 
     return jsonify({"message": "Transaction deleted successfully"})
 
+@app.route("/transactions/<int:id>", methods=["PUT"])
+def update_transaction(id):
+    transaction = Transaction.query.get(id)
+
+    if not transaction:
+        return jsonify({"error": "Transaction not found"}), 404
+
+    data = request.get_json()
+
+    transaction_type = data.get("type")
+    amount = data.get("amount")
+    category = data.get("category")
+    description = data.get("description", "")
+    date = data.get("date")
+
+    if not transaction_type or transaction_type not in ["income", "expense"]:
+        return jsonify({"error": "Type must be 'income' or 'expense'"}), 400
+
+    if amount is None:
+        return jsonify({"error": "Amount is required"}), 400
+
+    try:
+        amount = float(amount)
+    except ValueError:
+        return jsonify({"error": "Amount must be a number"}), 400
+
+    if amount <= 0:
+        return jsonify({"error": "Amount must be greater than 0"}), 400
+
+    if not category:
+        return jsonify({"error": "Category is required"}), 400
+
+    if not date:
+        return jsonify({"error": "Date is required"}), 400
+
+    transaction.type = transaction_type
+    transaction.amount = amount
+    transaction.category = category
+    transaction.description = description
+    transaction.date = date
+
+    db.session.commit()
+
+    return jsonify(transaction.to_dict())
+
 @app.route("/summary", methods=["GET"])
 def get_summary():
     transactions = Transaction.query.all()

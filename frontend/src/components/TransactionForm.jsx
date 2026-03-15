@@ -1,7 +1,13 @@
-function TransactionForm({ formData, handleChange, handleSubmit }) {
+function TransactionForm({
+  formData,
+  handleChange,
+  handleSubmit,
+  isEditing,
+  handleCancelEdit,
+}) {
   return (
     <>
-      <h2>Add Transaction</h2>
+      <h2>{isEditing ? "Edit Transaction" : "Add Transaction"}</h2>
 
       <form
         onSubmit={handleSubmit}
@@ -43,7 +49,19 @@ function TransactionForm({ formData, handleChange, handleSubmit }) {
           onChange={handleChange}
         />
 
-        <button type="submit">Add Transaction</button>
+        <button type="submit">
+          {isEditing ? "Update Transaction" : "Add Transaction"}
+        </button>
+
+        {isEditing && (
+          <button
+            type="button"
+            onClick={handleCancelEdit}
+            style={{ padding: "8px 12px", cursor: "pointer" }}
+          >
+            Cancel Edit
+          </button>
+        )}
       </form>
     </>
   );

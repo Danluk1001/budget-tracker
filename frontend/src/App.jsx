@@ -4,14 +4,15 @@ import TransactionForm from "./components/TransactionForm";
 import TransactionList from "./components/TransactionList";
 
 function App() {
-  const [formData, setFormData] = useState({
+  const emptyForm = {
     type: "expense",
     amount: "",
     category: "",
     description: "",
     date: "",
-  });
+  };
 
+  const [formData, setFormData] = useState(emptyForm);
   const [message, setMessage] = useState("");
   const [transactions, setTransactions] = useState([]);
   const [summary, setSummary] = useState({
@@ -19,6 +20,7 @@ function App() {
     expenses: 0,
     balance: 0,
   });
+  const [editingId, setEditingId] = useState(null);
 
   async function fetchTransactions() {
     try {
@@ -54,12 +56,37 @@ function App() {
     }));
   }
 
+  function handleEdit(transaction) {
+    setEditingId(transaction.id);
+    setFormData({
+      type: transaction.type,
+      amount: transaction.amount,
+      category: transaction.category,
+      description: transaction.description || "",
+      date: transaction.date,
+    });
+    setMessage("");
+  }
+
+  function handleCancelEdit() {
+    setEditingId(null);
+    setFormData(emptyForm);
+    setMessage("");
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
 
+    const isEditing = editingId !== null;
+    const url = isEditing
+      ? `http://127.0.0.1:5000/transactions/${editingId}`
+      : "http://127.0.0.1:5000/transactions";
+
+    const method = isEditing ? "PUT" : "POST";
+
     try {
-      const response = await fetch("http://127.0.0.1:5000/transactions", {
-        method: "POST",
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -73,15 +100,14 @@ function App() {
         return;
       }
 
-      setMessage("Transaction added successfully!");
+      setMessage(
+        isEditing
+          ? "Transaction updated successfully!"
+          : "Transaction added successfully!"
+      );
 
-      setFormData({
-        type: "expense",
-        amount: "",
-        category: "",
-        description: "",
-        date: "",
-      });
+      setFormData(emptyForm);
+      setEditingId(null);
 
       fetchTransactions();
       fetchSummary();
@@ -101,6 +127,11 @@ function App() {
       if (!response.ok) {
         setMessage(data.error || "Failed to delete transaction");
         return;
+      }
+
+      if (editingId === id) {
+        setEditingId(null);
+        setFormData(emptyForm);
       }
 
       setMessage("Transaction deleted successfully!");
@@ -129,6 +160,8 @@ function App() {
         formData={formData}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
+        isEditing={editingId !== null}
+        handleCancelEdit={handleCancelEdit}
       />
 
       {message && <p>{message}</p>}
@@ -136,6 +169,7 @@ function App() {
       <TransactionList
         transactions={transactions}
         handleDelete={handleDelete}
+        handleEdit={handleEdit}
       />
     </div>
   );
