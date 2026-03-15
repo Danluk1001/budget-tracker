@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import SummaryCards from "./components/SummaryCards";
+import TransactionForm from "./components/TransactionForm";
+import TransactionList from "./components/TransactionList";
 
 function App() {
   const [formData, setFormData] = useState({
@@ -88,124 +91,27 @@ function App() {
   }
 
   return (
-    <div style={{ padding: "40px", fontFamily: "Arial", maxWidth: "900px", margin: "0 auto" }}>
+    <div
+      style={{
+        padding: "40px",
+        fontFamily: "Arial",
+        maxWidth: "900px",
+        margin: "0 auto",
+      }}
+    >
       <h1>Budget Tracker</h1>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: "16px",
-          marginBottom: "30px",
-        }}
-      >
-        <div
-          style={{
-            border: "1px solid #ccc",
-            borderRadius: "10px",
-            padding: "20px",
-            textAlign: "center",
-          }}
-        >
-          <h3>Total Income</h3>
-          <p style={{ fontSize: "24px", margin: 0 }}>${summary.income.toFixed(2)}</p>
-        </div>
+      <SummaryCards summary={summary} />
 
-        <div
-          style={{
-            border: "1px solid #ccc",
-            borderRadius: "10px",
-            padding: "20px",
-            textAlign: "center",
-          }}
-        >
-          <h3>Total Expenses</h3>
-          <p style={{ fontSize: "24px", margin: 0 }}>${summary.expenses.toFixed(2)}</p>
-        </div>
-
-        <div
-          style={{
-            border: "1px solid #ccc",
-            borderRadius: "10px",
-            padding: "20px",
-            textAlign: "center",
-          }}
-        >
-          <h3>Balance</h3>
-          <p style={{ fontSize: "24px", margin: 0 }}>${summary.balance.toFixed(2)}</p>
-        </div>
-      </div>
-
-      <h2>Add Transaction</h2>
-      <form onSubmit={handleSubmit} style={{ display: "grid", gap: "12px", marginBottom: "30px" }}>
-        <select name="type" value={formData.type} onChange={handleChange}>
-          <option value="expense">Expense</option>
-          <option value="income">Income</option>
-        </select>
-
-        <input
-          type="number"
-          name="amount"
-          placeholder="Amount"
-          value={formData.amount}
-          onChange={handleChange}
-        />
-
-        <input
-          type="text"
-          name="category"
-          placeholder="Category"
-          value={formData.category}
-          onChange={handleChange}
-        />
-
-        <input
-          type="text"
-          name="description"
-          placeholder="Description"
-          value={formData.description}
-          onChange={handleChange}
-        />
-
-        <input
-          type="date"
-          name="date"
-          value={formData.date}
-          onChange={handleChange}
-        />
-
-        <button type="submit">Add Transaction</button>
-      </form>
+      <TransactionForm
+        formData={formData}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+      />
 
       {message && <p>{message}</p>}
 
-      <h2>Transactions</h2>
-
-      {transactions.length === 0 ? (
-        <p>No transactions yet.</p>
-      ) : (
-        <ul style={{ listStyle: "none", padding: 0 }}>
-          {transactions.map((transaction) => (
-            <li
-              key={transaction.id}
-              style={{
-                border: "1px solid #ccc",
-                borderRadius: "8px",
-                padding: "12px",
-                marginBottom: "12px",
-              }}
-            >
-              <strong>{transaction.type.toUpperCase()}</strong> — ${transaction.amount}
-              <br />
-              Category: {transaction.category}
-              <br />
-              Description: {transaction.description || "No description"}
-              <br />
-              Date: {transaction.date}
-            </li>
-          ))}
-        </ul>
-      )}
+      <TransactionList transactions={transactions} />
     </div>
   );
 }
