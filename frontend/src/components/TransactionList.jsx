@@ -1,50 +1,67 @@
 function TransactionList({ transactions, handleDelete, handleEdit }) {
   return (
     <>
-      <h2>Transactions</h2>
+      <div className="section-heading">
+        <h2>Transactions</h2>
+        <p>Your saved income and expense history.</p>
+      </div>
 
       {transactions.length === 0 ? (
-        <p>No transactions yet.</p>
+        <div className="empty-state">
+          <p>No transactions yet.</p>
+        </div>
       ) : (
-        <ul style={{ listStyle: "none", padding: 0 }}>
+        <div className="transaction-list">
           {transactions.map((transaction) => (
-            <li
-              key={transaction.id}
-              style={{
-                border: "1px solid #ccc",
-                borderRadius: "8px",
-                padding: "12px",
-                marginBottom: "12px",
-              }}
-            >
-              <strong>{transaction.type.toUpperCase()}</strong> — $
-              {transaction.amount}
-              <br />
-              Category: {transaction.category}
-              <br />
-              Description: {transaction.description || "No description"}
-              <br />
-              Date: {transaction.date}
-              <br />
+            <div className="transaction-card" key={transaction.id}>
+              <div className="transaction-top">
+                <div>
+                  <span
+                    className={`transaction-badge ${
+                      transaction.type === "income"
+                        ? "badge-income"
+                        : "badge-expense"
+                    }`}
+                  >
+                    {transaction.type.toUpperCase()}
+                  </span>
+                  <h3 className="transaction-amount">
+                    ${Number(transaction.amount).toFixed(2)}
+                  </h3>
+                </div>
+              </div>
 
-              <div style={{ marginTop: "10px", display: "flex", gap: "10px" }}>
+              <div className="transaction-details">
+                <p>
+                  <strong>Category:</strong> {transaction.category}
+                </p>
+                <p>
+                  <strong>Description:</strong>{" "}
+                  {transaction.description || "No description"}
+                </p>
+                <p>
+                  <strong>Date:</strong> {transaction.date}
+                </p>
+              </div>
+
+              <div className="transaction-actions">
                 <button
+                  className="secondary-button"
                   onClick={() => handleEdit(transaction)}
-                  style={{ padding: "6px 12px", cursor: "pointer" }}
                 >
                   Edit
                 </button>
 
                 <button
+                  className="danger-button"
                   onClick={() => handleDelete(transaction.id)}
-                  style={{ padding: "6px 12px", cursor: "pointer" }}
                 >
                   Delete
                 </button>
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </>
   );

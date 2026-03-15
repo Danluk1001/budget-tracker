@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import SummaryCards from "./components/SummaryCards";
 import TransactionForm from "./components/TransactionForm";
 import TransactionList from "./components/TransactionList";
+import "./App.css";
 
 function App() {
   const emptyForm = {
@@ -66,6 +67,7 @@ function App() {
       date: transaction.date,
     });
     setMessage("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   function handleCancelEdit() {
@@ -144,33 +146,38 @@ function App() {
   }
 
   return (
-    <div
-      style={{
-        padding: "40px",
-        fontFamily: "Arial",
-        maxWidth: "900px",
-        margin: "0 auto",
-      }}
-    >
-      <h1>Budget Tracker</h1>
+    <div className="app-shell">
+      <div className="app-container">
+        <header className="app-header">
+          <p className="app-eyebrow">Full Stack Budget App</p>
+          <h1>Budget Tracker</h1>
+          <p className="app-subtext">
+            Track income, expenses, and balance in one place.
+          </p>
+        </header>
 
-      <SummaryCards summary={summary} />
+        <SummaryCards summary={summary} />
 
-      <TransactionForm
-        formData={formData}
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-        isEditing={editingId !== null}
-        handleCancelEdit={handleCancelEdit}
-      />
+        <section className="panel">
+          <TransactionForm
+            formData={formData}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+            isEditing={editingId !== null}
+            handleCancelEdit={handleCancelEdit}
+          />
+        </section>
 
-      {message && <p>{message}</p>}
+        {message && <p className="status-message">{message}</p>}
 
-      <TransactionList
-        transactions={transactions}
-        handleDelete={handleDelete}
-        handleEdit={handleEdit}
-      />
+        <section className="panel">
+          <TransactionList
+            transactions={transactions}
+            handleDelete={handleDelete}
+            handleEdit={handleEdit}
+          />
+        </section>
+      </div>
     </div>
   );
 }

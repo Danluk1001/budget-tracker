@@ -7,12 +7,16 @@ function TransactionForm({
 }) {
   return (
     <>
-      <h2>{isEditing ? "Edit Transaction" : "Add Transaction"}</h2>
+      <div className="section-heading">
+        <h2>{isEditing ? "Edit Transaction" : "Add Transaction"}</h2>
+        <p>
+          {isEditing
+            ? "Update the selected transaction below."
+            : "Enter a new income or expense."}
+        </p>
+      </div>
 
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "grid", gap: "12px", marginBottom: "30px" }}
-      >
+      <form className="transaction-form" onSubmit={handleSubmit}>
         <select name="type" value={formData.type} onChange={handleChange}>
           <option value="expense">Expense</option>
           <option value="income">Income</option>
@@ -49,19 +53,21 @@ function TransactionForm({
           onChange={handleChange}
         />
 
-        <button type="submit">
-          {isEditing ? "Update Transaction" : "Add Transaction"}
-        </button>
-
-        {isEditing && (
-          <button
-            type="button"
-            onClick={handleCancelEdit}
-            style={{ padding: "8px 12px", cursor: "pointer" }}
-          >
-            Cancel Edit
+        <div className="form-actions">
+          <button className="primary-button" type="submit">
+            {isEditing ? "Update Transaction" : "Add Transaction"}
           </button>
-        )}
+
+          {isEditing && (
+            <button
+              className="secondary-button"
+              type="button"
+              onClick={handleCancelEdit}
+            >
+              Cancel Edit
+            </button>
+          )}
+        </div>
       </form>
     </>
   );
