@@ -1,3 +1,13 @@
+function formatDisplayDate(dateString) {
+  const date = new Date(dateString);
+
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
 function TransactionList({ transactions, handleDelete, handleEdit }) {
   return (
     <>
@@ -40,7 +50,7 @@ function TransactionList({ transactions, handleDelete, handleEdit }) {
                   {transaction.description || "No description"}
                 </p>
                 <p>
-                  <strong>Date:</strong> {transaction.date}
+                  <strong>Date:</strong> {formatDisplayDate(transaction.date)}
                 </p>
               </div>
 

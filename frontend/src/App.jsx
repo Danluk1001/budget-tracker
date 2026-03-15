@@ -17,6 +17,7 @@ function App() {
   const emptyFilters = {
     type: "all",
     category: "",
+    sortBy: "newest",
   };
 
   const [formData, setFormData] = useState(emptyForm);
@@ -166,7 +167,7 @@ function App() {
   }
 
   const filteredTransactions = useMemo(() => {
-    return transactions.filter((transaction) => {
+    let result = transactions.filter((transaction) => {
       const matchesType =
         filters.type === "all" || transaction.type === filters.type;
 
@@ -176,6 +177,28 @@ function App() {
 
       return matchesType && matchesCategory;
     });
+
+    result.sort((a, b) => {
+      if (filters.sortBy === "newest") {
+        return new Date(b.date) - new Date(a.date);
+      }
+
+      if (filters.sortBy === "oldest") {
+        return new Date(a.date) - new Date(b.date);
+      }
+
+      if (filters.sortBy === "highest") {
+        return Number(b.amount) - Number(a.amount);
+      }
+
+      if (filters.sortBy === "lowest") {
+        return Number(a.amount) - Number(b.amount);
+      }
+
+      return 0;
+    });
+
+    return result;
   }, [transactions, filters]);
 
   return (

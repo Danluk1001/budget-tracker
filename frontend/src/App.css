@@ -253,7 +253,7 @@ body {
 }
 .filter-bar {
   display: grid;
-  grid-template-columns: 1fr 1fr auto;
+  grid-template-columns: 1fr 1fr 1fr auto;
   gap: 12px;
   align-items: center;
 }
@@ -274,10 +274,4 @@ body {
   outline: none;
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-}
-
-@media (max-width: 768px) {
-  .filter-bar {
-    grid-template-columns: 1fr;
-  }
 }

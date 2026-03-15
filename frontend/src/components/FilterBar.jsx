@@ -2,8 +2,8 @@ function FilterBar({ filters, handleFilterChange, handleClearFilters }) {
   return (
     <section className="panel">
       <div className="section-heading">
-        <h2>Filters</h2>
-        <p>Filter transactions by type or category.</p>
+        <h2>Filters & Sorting</h2>
+        <p>Filter transactions by type or category, and sort the results.</p>
       </div>
 
       <div className="filter-bar">
@@ -24,6 +24,17 @@ function FilterBar({ filters, handleFilterChange, handleClearFilters }) {
           value={filters.category}
           onChange={handleFilterChange}
         />
+
+        <select
+          name="sortBy"
+          value={filters.sortBy}
+          onChange={handleFilterChange}
+        >
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="highest">Highest Amount</option>
+          <option value="lowest">Lowest Amount</option>
+        </select>
 
         <button className="secondary-button" onClick={handleClearFilters}>
           Clear Filters
