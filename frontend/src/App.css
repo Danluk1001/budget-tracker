@@ -275,3 +275,9 @@ body {
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
+.field-error {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  color: #dc2626;
+  font-weight: 600;
+}

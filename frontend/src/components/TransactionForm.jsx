@@ -1,5 +1,6 @@
 function TransactionForm({
   formData,
+  formErrors,
   handleChange,
   handleSubmit,
   isEditing,
@@ -16,42 +17,59 @@ function TransactionForm({
         </p>
       </div>
 
-      <form className="transaction-form" onSubmit={handleSubmit}>
-        <select name="type" value={formData.type} onChange={handleChange}>
-          <option value="expense">Expense</option>
-          <option value="income">Income</option>
-        </select>
+      <form className="transaction-form" onSubmit={handleSubmit} noValidate>
+        <div>
+          <select name="type" value={formData.type} onChange={handleChange}>
+            <option value="expense">Expense</option>
+            <option value="income">Income</option>
+          </select>
+        </div>
 
-        <input
-          type="number"
-          name="amount"
-          placeholder="Amount"
-          value={formData.amount}
-          onChange={handleChange}
-        />
+        <div>
+          <input
+            type="number"
+            name="amount"
+            placeholder="Amount"
+            value={formData.amount}
+            onChange={handleChange}
+          />
+          {formErrors.amount && (
+            <p className="field-error">{formErrors.amount}</p>
+          )}
+        </div>
 
-        <input
-          type="text"
-          name="category"
-          placeholder="Category"
-          value={formData.category}
-          onChange={handleChange}
-        />
+        <div>
+          <input
+            type="text"
+            name="category"
+            placeholder="Category"
+            value={formData.category}
+            onChange={handleChange}
+          />
+          {formErrors.category && (
+            <p className="field-error">{formErrors.category}</p>
+          )}
+        </div>
 
-        <input
-          type="text"
-          name="description"
-          placeholder="Description"
-          value={formData.description}
-          onChange={handleChange}
-        />
+        <div>
+          <input
+            type="text"
+            name="description"
+            placeholder="Description"
+            value={formData.description}
+            onChange={handleChange}
+          />
+        </div>
 
-        <input
-          type="date"
-          name="date"
-          value={formData.date}
-          onChange={handleChange}
-        />
+        <div>
+          <input
+            type="date"
+            name="date"
+            value={formData.date}
+            onChange={handleChange}
+          />
+          {formErrors.date && <p className="field-error">{formErrors.date}</p>}
+        </div>
 
         <div className="form-actions">
           <button className="primary-button" type="submit">

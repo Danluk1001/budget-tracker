@@ -22,6 +22,7 @@ function App() {
 
   const [formData, setFormData] = useState(emptyForm);
   const [message, setMessage] = useState("");
+  const [formErrors, setFormErrors] = useState({});
   const [transactions, setTransactions] = useState([]);
   const [summary, setSummary] = useState({
     income: 0,
@@ -63,6 +64,11 @@ function App() {
       ...prev,
       [name]: value,
     }));
+
+    setFormErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
   }
 
   function handleFilterChange(event) {
@@ -78,15 +84,36 @@ function App() {
     setFilters(emptyFilters);
   }
 
+  function validateForm() {
+    const errors = {};
+
+    if (!formData.amount || formData.amount.trim() === "") {
+      errors.amount = "Amount is required.";
+    } else if (Number(formData.amount) <= 0) {
+      errors.amount = "Amount must be greater than 0.";
+    }
+
+    if (!formData.category.trim()) {
+      errors.category = "Category is required.";
+    }
+
+    if (!formData.date) {
+      errors.date = "Date is required.";
+    }
+
+    return errors;
+  }
+
   function handleEdit(transaction) {
     setEditingId(transaction.id);
     setFormData({
       type: transaction.type,
-      amount: transaction.amount,
+      amount: String(transaction.amount),
       category: transaction.category,
       description: transaction.description || "",
       date: transaction.date,
     });
+    setFormErrors({});
     setMessage("");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -94,11 +121,20 @@ function App() {
   function handleCancelEdit() {
     setEditingId(null);
     setFormData(emptyForm);
+    setFormErrors({});
     setMessage("");
   }
 
   async function handleSubmit(event) {
     event.preventDefault();
+
+    const errors = validateForm();
+
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      setMessage("Please fix the form errors below.");
+      return;
+    }
 
     const isEditing = editingId !== null;
     const url = isEditing
@@ -130,6 +166,7 @@ function App() {
       );
 
       setFormData(emptyForm);
+      setFormErrors({});
       setEditingId(null);
 
       fetchTransactions();
@@ -155,6 +192,7 @@ function App() {
       if (editingId === id) {
         setEditingId(null);
         setFormData(emptyForm);
+        setFormErrors({});
       }
 
       setMessage("Transaction deleted successfully!");
@@ -217,6 +255,7 @@ function App() {
         <section className="panel">
           <TransactionForm
             formData={formData}
+            formErrors={formErrors}
             handleChange={handleChange}
             handleSubmit={handleSubmit}
             isEditing={editingId !== null}
