@@ -11,6 +11,11 @@ function App() {
 
   const [message, setMessage] = useState("");
   const [transactions, setTransactions] = useState([]);
+  const [summary, setSummary] = useState({
+    income: 0,
+    expenses: 0,
+    balance: 0,
+  });
 
   async function fetchTransactions() {
     try {
@@ -22,8 +27,19 @@ function App() {
     }
   }
 
+  async function fetchSummary() {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/summary");
+      const data = await response.json();
+      setSummary(data);
+    } catch (error) {
+      setMessage("Failed to load summary");
+    }
+  }
+
   useEffect(() => {
     fetchTransactions();
+    fetchSummary();
   }, []);
 
   function handleChange(event) {
@@ -65,14 +81,60 @@ function App() {
       });
 
       fetchTransactions();
+      fetchSummary();
     } catch (error) {
       setMessage("Failed to connect to backend");
     }
   }
 
   return (
-    <div style={{ padding: "40px", fontFamily: "Arial", maxWidth: "700px" }}>
+    <div style={{ padding: "40px", fontFamily: "Arial", maxWidth: "900px", margin: "0 auto" }}>
       <h1>Budget Tracker</h1>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: "16px",
+          marginBottom: "30px",
+        }}
+      >
+        <div
+          style={{
+            border: "1px solid #ccc",
+            borderRadius: "10px",
+            padding: "20px",
+            textAlign: "center",
+          }}
+        >
+          <h3>Total Income</h3>
+          <p style={{ fontSize: "24px", margin: 0 }}>${summary.income.toFixed(2)}</p>
+        </div>
+
+        <div
+          style={{
+            border: "1px solid #ccc",
+            borderRadius: "10px",
+            padding: "20px",
+            textAlign: "center",
+          }}
+        >
+          <h3>Total Expenses</h3>
+          <p style={{ fontSize: "24px", margin: 0 }}>${summary.expenses.toFixed(2)}</p>
+        </div>
+
+        <div
+          style={{
+            border: "1px solid #ccc",
+            borderRadius: "10px",
+            padding: "20px",
+            textAlign: "center",
+          }}
+        >
+          <h3>Balance</h3>
+          <p style={{ fontSize: "24px", margin: 0 }}>${summary.balance.toFixed(2)}</p>
+        </div>
+      </div>
 
       <h2>Add Transaction</h2>
       <form onSubmit={handleSubmit} style={{ display: "grid", gap: "12px", marginBottom: "30px" }}>
