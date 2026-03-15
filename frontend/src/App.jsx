@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SummaryCards from "./components/SummaryCards";
 import TransactionForm from "./components/TransactionForm";
 import TransactionList from "./components/TransactionList";
+import FilterBar from "./components/FilterBar";
 import "./App.css";
 
 function App() {
@@ -13,6 +14,11 @@ function App() {
     date: "",
   };
 
+  const emptyFilters = {
+    type: "all",
+    category: "",
+  };
+
   const [formData, setFormData] = useState(emptyForm);
   const [message, setMessage] = useState("");
   const [transactions, setTransactions] = useState([]);
@@ -22,6 +28,7 @@ function App() {
     balance: 0,
   });
   const [editingId, setEditingId] = useState(null);
+  const [filters, setFilters] = useState(emptyFilters);
 
   async function fetchTransactions() {
     try {
@@ -55,6 +62,19 @@ function App() {
       ...prev,
       [name]: value,
     }));
+  }
+
+  function handleFilterChange(event) {
+    const { name, value } = event.target;
+
+    setFilters((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+
+  function handleClearFilters() {
+    setFilters(emptyFilters);
   }
 
   function handleEdit(transaction) {
@@ -145,6 +165,19 @@ function App() {
     }
   }
 
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter((transaction) => {
+      const matchesType =
+        filters.type === "all" || transaction.type === filters.type;
+
+      const matchesCategory = transaction.category
+        .toLowerCase()
+        .includes(filters.category.toLowerCase());
+
+      return matchesType && matchesCategory;
+    });
+  }, [transactions, filters]);
+
   return (
     <div className="app-shell">
       <div className="app-container">
@@ -170,9 +203,15 @@ function App() {
 
         {message && <p className="status-message">{message}</p>}
 
+        <FilterBar
+          filters={filters}
+          handleFilterChange={handleFilterChange}
+          handleClearFilters={handleClearFilters}
+        />
+
         <section className="panel">
           <TransactionList
-            transactions={transactions}
+            transactions={filteredTransactions}
             handleDelete={handleDelete}
             handleEdit={handleEdit}
           />
