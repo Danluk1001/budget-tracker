@@ -281,3 +281,58 @@ body {
   color: #dc2626;
   font-weight: 600;
 }
+.monthly-breakdown-list {
+  display: grid;
+  gap: 16px;
+}
+
+.monthly-breakdown-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 20px;
+  background: #f9fafb;
+}
+
+.monthly-breakdown-header h3 {
+  margin: 0 0 16px;
+  font-size: 1.2rem;
+}
+
+.monthly-breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.monthly-label {
+  margin: 0 0 8px;
+  color: #6b7280;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.monthly-income,
+.monthly-expense,
+.monthly-balance {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.monthly-income {
+  color: #15803d;
+}
+
+.monthly-expense {
+  color: #dc2626;
+}
+
+.monthly-balance {
+  color: #2563eb;
+}
+
+@media (max-width: 768px) {
+  .monthly-breakdown-grid {
+    grid-template-columns: 1fr;
+  }
+}

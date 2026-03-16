@@ -3,6 +3,7 @@ import SummaryCards from "./components/SummaryCards";
 import TransactionForm from "./components/TransactionForm";
 import TransactionList from "./components/TransactionList";
 import FilterBar from "./components/FilterBar";
+import MonthlyBreakdown from "./components/MonthlyBreakdown";
 import "./App.css";
 
 function App() {
@@ -239,6 +240,45 @@ function App() {
     return result;
   }, [transactions, filters]);
 
+  const monthlyData = useMemo(() => {
+    const grouped = {};
+
+    transactions.forEach((transaction) => {
+      const date = new Date(transaction.date);
+      const monthKey = `${date.getFullYear()}-${String(
+        date.getMonth() + 1
+      ).padStart(2, "0")}`;
+
+      const label = date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+      });
+
+      if (!grouped[monthKey]) {
+        grouped[monthKey] = {
+          monthKey,
+          label,
+          income: 0,
+          expenses: 0,
+          balance: 0,
+        };
+      }
+
+      if (transaction.type === "income") {
+        grouped[monthKey].income += Number(transaction.amount);
+      } else if (transaction.type === "expense") {
+        grouped[monthKey].expenses += Number(transaction.amount);
+      }
+
+      grouped[monthKey].balance =
+        grouped[monthKey].income - grouped[monthKey].expenses;
+    });
+
+    return Object.values(grouped).sort(
+      (a, b) => new Date(`${b.monthKey}-01`) - new Date(`${a.monthKey}-01`)
+    );
+  }, [transactions]);
+
   return (
     <div className="app-shell">
       <div className="app-container">
@@ -251,6 +291,8 @@ function App() {
         </header>
 
         <SummaryCards summary={summary} />
+
+        <MonthlyBreakdown monthlyData={monthlyData} />
 
         <section className="panel">
           <TransactionForm
